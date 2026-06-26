@@ -1,0 +1,466 @@
+"""
+QUICK REFERENCE CARD - Smart Library Assistant
+Copy-paste ready code snippets for common tasks
+"""
+
+# ===========================================================================
+# INSTALLATION
+# ===========================================================================
+
+# Windows - Automatic
+run_app.bat
+
+# Windows - Manual
+python app.py
+
+# macOS/Linux - Automatic
+chmod +x run_app.sh
+./run_app.sh
+
+# macOS/Linux - Manual
+python3 app.py
+
+# Install dependencies
+pip install -r requirements.txt
+
+
+# ===========================================================================
+# BASIC USAGE
+# ===========================================================================
+
+# Initialize all modules
+from src.database import BooksDatabase
+from src.search import BookSearch
+from src.nlp import BookNLP
+from src.rag import BookRAG
+from src.ml import DemandPredictor
+
+db = BooksDatabase()
+search = BookSearch(db)
+nlp = BookNLP(db)
+rag = BookRAG(db)
+ml = DemandPredictor(db)
+
+
+# ===========================================================================
+# SEARCH EXAMPLES
+# ===========================================================================
+
+# Search by title
+results = search.search_by_title("Harry Potter", limit=5)
+print(search.format_search_results(results))
+
+# Search by author
+results = search.search_by_author("J.K. Rowling", limit=3)
+print(search.format_search_results(results))
+
+# Combined search
+results = search.search_combined("1984", limit=5)
+
+# Search with rating filter
+results = search.search_with_filters("love", min_rating=4.0, max_rating=5.0)
+
+
+# ===========================================================================
+# QUESTION ANSWERING (NLP/RAG)
+# ===========================================================================
+
+# Ask a question using RAG
+question = "What is the rating of The Great Gatsby?"
+result = rag.answer_question(question)
+print(result['answer'])
+print(f"Confidence: {result['confidence']:.2%}")
+
+# Ask about specific book using NLP
+answer = nlp.process_question_about_book("Who wrote 1984?")
+print(answer)
+
+# Ask using RAG simple method
+answer = rag.search_and_answer("Tell me about Pride and Prejudice")
+print(answer)
+
+
+# ===========================================================================
+# COMPUTER VISION & OCR
+# ===========================================================================
+
+from src.cv import BookCoverOCR
+
+ocr = BookCoverOCR(db)
+
+# Extract text from image
+text = ocr.extract_text_from_image("path/to/image.jpg")
+print(text)
+
+# Extract title from image
+title = ocr.extract_book_title_from_image("path/to/image.jpg")
+print(f"Extracted title: {title}")
+
+# Search book from cover image
+result = ocr.search_book_from_cover("path/to/cover.jpg")
+if result['success']:
+    print(f"Found {result['count']} books")
+    for book in result['results']:
+        print(f"  - {book['title']}")
+
+
+# ===========================================================================
+# MACHINE LEARNING PREDICTIONS
+# ===========================================================================
+
+# Get a single book
+results = search.search_by_title("Harry Potter", limit=1)
+if results:
+    book = results[0]
+    
+    # Predict demand
+    prediction = ml.predict_demand(book)
+    print(f"Demand: {prediction['demand']}")
+    print(f"Confidence: {prediction['confidence']:.2%}")
+
+# Predict for multiple books
+results = search.search_by_title("The", limit=5)
+predictions = ml.predict_batch(results)
+for book, pred in zip(results, predictions):
+    if pred['success']:
+        print(f"{book['title']}: {pred['demand']}")
+
+# Get feature importance
+importance = ml.get_feature_importance()
+for feature, score in importance.items():
+    print(f"{feature}: {score:.4f}")
+
+
+# ===========================================================================
+# DATASET OPERATIONS
+# ===========================================================================
+
+# Get dataset info
+info = db.get_dataset_info()
+print(f"Total books: {info['total_books']}")
+print(f"Authors: {info['total_authors']}")
+print(f"Avg rating: {info['avg_rating']:.2f}")
+
+# Get top rated books
+top_books = db.get_top_rated_books(limit=5)
+for book in top_books:
+    print(f"{book['title']} - {book['average_rating']}/5.0")
+
+# Get most reviewed books
+reviewed = db.get_most_reviewed_books(limit=5)
+
+# Get book by index
+book = db.get_book_by_index(0)
+
+
+# ===========================================================================
+# UTILITY FUNCTIONS
+# ===========================================================================
+
+from src.utils import *
+
+# Format book for display
+formatted = format_book_display(book)
+print(formatted)
+
+# Save results to file
+content = search.format_search_results(results)
+save_result_to_file(content, "my_results.txt")
+
+# Clean text
+clean = clean_text("  HELLO WORLD  ")  # Returns "hello world"
+
+# Truncate text
+short = truncate_text("Very long text...", max_length=20)
+
+# Validate file
+if validate_file_path("data/books (1).csv"):
+    print("File exists!")
+
+# Validate image
+if validate_image_file("cover.jpg"):
+    print("Valid image!")
+
+
+# ===========================================================================
+# ERROR HANDLING
+# ===========================================================================
+
+# Safe search
+try:
+    results = search.search_by_title("query")
+    if results:
+        print(f"Found {len(results)} books")
+    else:
+        print("No books found")
+except Exception as e:
+    print(f"Error: {e}")
+
+# Safe question answering
+question = "Your question?"
+if nlp.validate_question(question):
+    answer = nlp.process_question_about_book(question)
+    print(answer)
+else:
+    print("Invalid question")
+
+# Safe OCR
+result = ocr.search_book_from_cover("image.jpg")
+if result['success']:
+    print(f"Found {result['count']} books")
+else:
+    print(f"Error: {result['message']}")
+
+
+# ===========================================================================
+# BATCH OPERATIONS
+# ===========================================================================
+
+# Search multiple titles
+titles = ["1984", "The Great Gatsby", "To Kill a Mockingbird"]
+for title in titles:
+    results = search.search_by_title(title, limit=1)
+    if results:
+        book = results[0]
+        print(f"✓ {title}: {book['average_rating']}/5.0")
+
+# Predict demand for multiple books
+results = search.search_by_title("The", limit=10)
+for book in results:
+    pred = ml.predict_demand(book)
+    print(f"{book['title']}: {pred['demand']}")
+
+# Get answers to multiple questions
+questions = [
+    "What is the rating of 1984?",
+    "Who wrote The Great Gatsby?",
+    "When was Harry Potter published?"
+]
+for q in questions:
+    answer = rag.answer_question(q)
+    print(f"Q: {q}")
+    print(f"A: {answer['answer']}\n")
+
+
+# ===========================================================================
+# TESTING
+# ===========================================================================
+
+# Run comprehensive test
+# Command line:
+python test.py
+
+# In code:
+from src.database import BooksDatabase
+
+db = BooksDatabase()
+assert len(db.df) == 11123, "Dataset size mismatch"
+print("✅ All tests passed!")
+
+
+# ===========================================================================
+# DEBUGGING TIPS
+# ===========================================================================
+
+# Check import errors
+python -c "from src.database import BooksDatabase; print('OK')"
+
+# Check if Tesseract is installed
+pytesseract.get_tesseract_version()
+
+# Check Python version
+python --version  # Should be 3.7+
+
+# Check dependencies
+pip list | grep -E "pandas|numpy|opencv|tesseract|scikit"
+
+# Test database connection
+db = BooksDatabase()
+print(f"Connected: {len(db.df)} books loaded")
+
+# Test model
+ml = DemandPredictor(db)
+print(f"Model ready: {ml.model is not None}")
+
+
+# ===========================================================================
+# COMMON TASKS
+# ===========================================================================
+
+# Find a specific book
+query = "Harry Potter"
+results = search.search_by_title(query, limit=1)
+book = results[0] if results else None
+
+# Get book information
+if book:
+    print(f"Title: {book['title']}")
+    print(f"Author: {book['authors']}")
+    print(f"Rating: {book['average_rating']}")
+    print(f"ISBN: {book['isbn']}")
+
+# Predict book popularity
+if book:
+    pred = ml.predict_demand(book)
+    if pred['success']:
+        print(f"Demand: {pred['demand']}")
+
+# Answer questions about book
+if book:
+    questions = [
+        "Who is the author?",
+        "What's the rating?",
+        "When was it published?"
+    ]
+    for q in questions:
+        answer = rag.ask_about_book(book['title'], q)
+        print(f"Q: {q}")
+        print(f"A: {answer}\n")
+
+
+# ===========================================================================
+# PERFORMANCE TIPS
+# ===========================================================================
+
+# Cache search results
+search_cache = {}
+query = "Harry Potter"
+if query not in search_cache:
+    search_cache[query] = search.search_by_title(query)
+results = search_cache[query]
+
+# Limit search results
+results = search.search_by_title("The", limit=5)  # Only get 5
+
+# Use batch predictions
+books = search.search_by_title("book", limit=10)
+predictions = ml.predict_batch(books)  # Faster than loop
+
+# Pre-load model
+ml = DemandPredictor(db)  # Model loads/trains on init
+
+
+# ===========================================================================
+# COMMAND EXAMPLES
+# ===========================================================================
+
+# Terminal - Search
+python -c "from src.search import BookSearch; s = BookSearch(); print(len(s.search_by_title('Harry')))"
+
+# Terminal - Test
+python test.py
+
+# Terminal - Run GUI
+python app.py
+
+# Terminal - Python REPL
+python
+>>> from src.search import BookSearch
+>>> s = BookSearch()
+>>> s.search_by_title("1984")
+
+
+# ===========================================================================
+# FILE LOCATIONS
+# ===========================================================================
+
+# Data file
+data/books (1).csv
+
+# Trained model
+models/demand_model.pkl
+
+# Uploaded images
+uploads/*.jpg, uploads/*.png
+
+# Output files
+outputs/*.txt
+
+# Source code
+src/*.py
+
+
+# ===========================================================================
+# QUICK TROUBLESHOOTING
+# ===========================================================================
+
+# No results found?
+→ Try shorter search term
+→ Check spelling
+→ Use different search method
+
+# Tesseract error?
+→ Install: GitHub UB-Mannheim/tesseract
+→ macOS: brew install tesseract
+→ Linux: sudo apt-get install tesseract-ocr
+
+# ModuleNotFoundError?
+→ pip install -r requirements.txt
+→ Verify Python path
+→ Check virtual environment
+
+# GUI not opening?
+→ Verify Tkinter installed
+→ Linux: sudo apt-get install python3-tk
+→ Check DISPLAY variable
+
+# Model training slow?
+→ This is normal (10-20 seconds first run)
+→ Model cached for future use
+→ Be patient!
+
+
+# ===========================================================================
+# REFERENCE VALUES
+# ===========================================================================
+
+# Dataset size
+Total books: 11,123
+Unique authors: 6,639
+Avg rating: 3.93/5.0
+
+# ML Model stats
+Train accuracy: 99.99%
+Test accuracy: 99.78%
+Algorithm: Random Forest
+Trees: 100
+Features: 3
+
+# Available features
+- Search by Title
+- Search by Author
+- Search by ISBN
+- Combined Search
+- Filter by Rating
+- Answer Questions (NLP)
+- Answer Questions (RAG)
+- Predict Demand (ML)
+- Extract Text (OCR)
+
+
+# ===========================================================================
+# KEYBOARD SHORTCUTS (GUI)
+# ===========================================================================
+
+Enter - Perform search/submit question
+Tab - Move between fields
+Ctrl+C - Copy selected text
+Ctrl+A - Select all text
+ESC - Clear field
+
+
+# ===========================================================================
+# FILE EDITING
+# ===========================================================================
+
+# Change Tesseract path (if needed)
+# Edit src/cv.py:
+pytesseract.pytesseract.pytesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Change CSV file path
+# Edit src/database.py:
+def __init__(self, csv_path: str = 'data/books (1).csv'):
+
+# Change model save location
+# Edit src/ml.py:
+def __init__(self, database: BooksDatabase = None, model_path: str = 'models/demand_model.pkl'):

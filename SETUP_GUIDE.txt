@@ -1,0 +1,463 @@
+"""
+SETUP AND INSTALLATION GUIDE
+Smart Library Assistant - Complete Setup Instructions
+"""
+
+# ============================================================================
+# TABLE OF CONTENTS
+# ============================================================================
+# 1. System Requirements
+# 2. Pre-Installation Steps
+# 3. Installation on Windows
+# 4. Installation on macOS
+# 5. Installation on Linux
+# 6. Verifying Installation
+# 7. Troubleshooting
+# 8. First Run
+# ============================================================================
+
+# ============================================================================
+# 1. SYSTEM REQUIREMENTS
+# ============================================================================
+
+## Hardware Requirements
+- CPU: Dual-core processor or better
+- RAM: 4GB minimum (8GB recommended)
+- Disk Space: 2GB for project + dependencies
+
+## Software Requirements
+- Python 3.7 or higher
+- pip (Python package manager)
+- Tesseract OCR (for image text extraction)
+- Git (optional, for version control)
+
+## Supported Operating Systems
+- Windows 7 and above
+- macOS 10.13 and above
+- Ubuntu 18.04+, Debian 9+, and other Linux distributions
+
+
+# ============================================================================
+# 2. PRE-INSTALLATION STEPS
+# ============================================================================
+
+## Step 1: Verify Python Installation
+
+### Windows:
+```
+python --version
+```
+
+### macOS/Linux:
+```
+python3 --version
+```
+
+Expected output: Python 3.7.x or higher
+
+## Step 2: Verify pip Installation
+
+### Windows:
+```
+pip --version
+```
+
+### macOS/Linux:
+```
+pip3 --version
+```
+
+Expected output: pip X.X.X from ...
+
+## Step 3: Download/Clone the Project
+
+Option A - Download as ZIP:
+1. Go to the project repository
+2. Click "Download ZIP"
+3. Extract to desired location
+
+Option B - Clone with Git:
+```
+git clone <repository-url>
+cd "Smart Library Assistant"
+```
+
+
+# ============================================================================
+# 3. INSTALLATION ON WINDOWS
+# ============================================================================
+
+### Method 1: Automatic Installation (Recommended)
+
+1. Navigate to project folder:
+   ```
+   cd path\to\Smart Library Assistant
+   ```
+
+2. Run the automated setup script:
+   ```
+   run_app.bat
+   ```
+
+This will:
+- Check Python installation
+- Install Python dependencies
+- Launch the application
+
+### Method 2: Manual Installation
+
+1. Open Command Prompt (cmd.exe)
+
+2. Navigate to project folder:
+   ```
+   cd path\to\Smart Library Assistant
+   ```
+
+3. Create virtual environment (optional but recommended):
+   ```
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+4. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+5. Install Tesseract OCR:
+   - Download from: https://github.com/UB-Mannheim/tesseract/wiki
+   - Run installer (default path: C:\Program Files\Tesseract-OCR)
+   - Note the installation path
+
+6. Update pytesseract path in src/cv.py (if non-default location):
+   ```python
+   import pytesseract
+   pytesseract.pytesseract.pytesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+   ```
+
+7. Run the application:
+   ```
+   python app.py
+   ```
+
+
+# ============================================================================
+# 4. INSTALLATION ON macOS
+# ============================================================================
+
+### Prerequisites
+
+1. Install Homebrew (if not already installed):
+   ```
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+2. Install Tesseract:
+   ```
+   brew install tesseract
+   ```
+
+3. Install Python 3 (if not already installed):
+   ```
+   brew install python3
+   ```
+
+### Installation Steps
+
+1. Navigate to project folder:
+   ```
+   cd path/to/Smart\ Library\ Assistant
+   ```
+
+2. Create virtual environment (recommended):
+   ```
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install dependencies:
+   ```
+   pip3 install -r requirements.txt
+   ```
+
+4. Run the application:
+   ```
+   python3 app.py
+   ```
+
+### Using the Shell Script
+
+Alternatively, make the shell script executable and run it:
+```
+chmod +x run_app.sh
+./run_app.sh
+```
+
+
+# ============================================================================
+# 5. INSTALLATION ON LINUX
+# ============================================================================
+
+### Ubuntu/Debian Installation
+
+1. Update package manager:
+   ```
+   sudo apt-get update
+   sudo apt-get upgrade
+   ```
+
+2. Install Python 3 and pip:
+   ```
+   sudo apt-get install python3 python3-pip python3-venv
+   ```
+
+3. Install Tesseract:
+   ```
+   sudo apt-get install tesseract-ocr
+   ```
+
+4. Install OpenCV dependencies (if needed):
+   ```
+   sudo apt-get install libsm6 libxext6 libxrender-dev
+   ```
+
+5. Navigate to project folder:
+   ```
+   cd path/to/Smart\ Library\ Assistant
+   ```
+
+6. Create virtual environment:
+   ```
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+7. Install Python dependencies:
+   ```
+   pip3 install -r requirements.txt
+   ```
+
+8. Run the application:
+   ```
+   python3 app.py
+   ```
+
+### Fedora/RHEL Installation
+
+1. Install dependencies:
+   ```
+   sudo dnf install python3 python3-pip python3-devel tesseract-ocr
+   ```
+
+2. Create virtual environment:
+   ```
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. Install requirements:
+   ```
+   pip3 install -r requirements.txt
+   ```
+
+4. Run the application:
+   ```
+   python3 app.py
+   ```
+
+### Using the Shell Script
+
+Make it executable and run:
+```
+chmod +x run_app.sh
+./run_app.sh
+```
+
+
+# ============================================================================
+# 6. VERIFYING INSTALLATION
+# ============================================================================
+
+Run the test script to verify all components:
+
+### Windows:
+```
+python test.py
+```
+
+### macOS/Linux:
+```
+python3 test.py
+```
+
+Expected output should show:
+✅ All tests passed
+✅ Database loaded with 11,123 books
+✅ Search functionality working
+✅ NLP answering questions
+✅ ML model trained
+✅ Dataset statistics displayed
+
+
+# ============================================================================
+# 7. TROUBLESHOOTING
+# ============================================================================
+
+### Issue: ModuleNotFoundError: No module named 'X'
+
+Solution:
+1. Ensure you're in the correct directory
+2. Reinstall dependencies:
+   ```
+   pip install -r requirements.txt --force-reinstall
+   ```
+3. Check Python version: python --version (should be 3.7+)
+
+### Issue: Tesseract not found error
+
+Solution (Windows):
+1. Reinstall Tesseract from GitHub
+2. Add to cv.py:
+   ```python
+   pytesseract.pytesseract.pytesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+   ```
+
+Solution (macOS):
+```
+brew install tesseract
+```
+
+Solution (Linux):
+```
+sudo apt-get install tesseract-ocr
+```
+
+### Issue: CSV file not found
+
+Solution:
+1. Ensure books (1).csv exists in data/ folder
+2. Check file is not renamed
+3. Verify path in database.py: 'data/books (1).csv'
+
+### Issue: GUI not opening
+
+Solution:
+1. Verify Tkinter is installed (comes with Python)
+2. On Linux, install: sudo apt-get install python3-tk
+3. Check for display server (X11) on headless systems
+
+### Issue: Poor OCR results on images
+
+Solution:
+1. Use high-resolution images (300+ dpi)
+2. Ensure text is clear and readable
+3. Use black text on white background
+4. Crop to focus on title area
+
+### Issue: Model training takes too long
+
+Solution:
+1. This is normal on first run (10-20 seconds)
+2. Model is saved for future use
+3. Subsequent runs will use cached model
+
+### Issue: Search returns no results
+
+Solution:
+1. Try shorter search terms
+2. Check spelling
+3. Dataset may not have the book
+4. Use wildcard searching in code
+
+
+# ============================================================================
+# 8. FIRST RUN
+# ============================================================================
+
+### Windows:
+
+Option A (Automatic):
+```
+run_app.bat
+```
+
+Option B (Manual):
+```
+python app.py
+```
+
+### macOS/Linux:
+
+Option A (Automatic):
+```
+./run_app.sh
+```
+
+Option B (Manual):
+```
+python3 app.py
+```
+
+### What to Expect
+
+1. GUI window opens with 4 tabs
+2. Database loads (shows "Successfully loaded 11,123 books")
+3. ML model trains on first run (~15 seconds)
+4. System ready for use
+
+### Testing Features
+
+1. **Search Tab**: Search for "Harry Potter" by title
+2. **Question Tab**: Ask "What is the rating of The Great Gatsby?"
+3. **OCR Tab**: Upload any book cover image
+4. **Demand Tab**: Predict demand after searching
+
+### Important Notes
+
+- First ML model training takes ~15 seconds
+- Model is cached in models/demand_model.pkl
+- All operations are thread-safe (GUI won't freeze)
+- Results saved to outputs/ folder
+
+
+# ============================================================================
+# ADDITIONAL RESOURCES
+# ============================================================================
+
+## Documentation Files
+
+- README.md - Complete project overview
+- requirements.txt - List of dependencies
+- test.py - Component testing script
+- run_app.bat / run_app.sh - Automated launch scripts
+
+## Python Package Documentation
+
+- Pandas: https://pandas.pydata.org/docs/
+- NumPy: https://numpy.org/doc/
+- OpenCV: https://docs.opencv.org/
+- Scikit-learn: https://scikit-learn.org/stable/documentation.html
+- Tesseract: https://github.com/UB-Mannheim/tesseract/wiki
+
+## Getting Help
+
+1. Check troubleshooting section above
+2. Review README.md for detailed information
+3. Check module docstrings in Python files
+4. Run test.py to identify specific issues
+
+
+# ============================================================================
+# NEXT STEPS
+# ============================================================================
+
+After successful installation:
+
+1. Run test.py to verify all components
+2. Launch app.py to start the GUI
+3. Explore all 4 feature tabs
+4. Review README.md for detailed feature documentation
+5. Check code comments for implementation details
+6. Modify and extend as needed for your use case
+
+Enjoy! 📚
